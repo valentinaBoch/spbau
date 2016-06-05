@@ -1,7 +1,8 @@
 #include <stdio.h>
 #include <math.h>
 
-void randWrite (double *, double *, int );
+void randWrite (double *, int );
+void printArr (double *, int);
 void massNew (double *, double *, int );
 void quickSort (double *, int);
 int main ()
@@ -9,42 +10,50 @@ int main ()
 	int size = 5;
 	double mas1 [size], mas2 [size]; 
 	int i;
-	randWrite(mas1, mas2, size);
-	for (int i = 0; i < size; i++) 
-		printf("mas1 [%d] = %.0lf\n", i, mas1 [i]);
-	for (int i = 0; i < size; i++)
-		printf("mas2 [%d] = %.0lf\n", i, mas2 [i]);
+	randWrite(mas1, size);
+	randWrite(mas2, size);
 
+	printf ("First array before sort: \n");
+	printArr(mas1, size);
+	printf ("Second array before sort: \n");
+        printArr(mas2, size);
 
-	quickSort (mas1, size);
-	quickSort (mas2, size);	
-	for (int i = 0; i < size; i++)
-		printf("mas1 [%d] = %.0lf\n", i, mas1 [i]);
+	quickSort (mas1, size-1);
+	quickSort (mas2, size-1);	
+	
+	printf ("\n");
+	printf ("First array after sort: \n");
+        printArr(mas1, size);
+        printf ("Second array after sort: \n");
+        printArr(mas2, size);
+
+	printf ("\n");
 	massNew (mas1, mas2, size);
 }
 
-void randWrite (double *mas1, double *mas2, int size)
+void randWrite (double *mas, int size)
 {
 	for (int i = 0; i < size; i++)
-		mas1 [i] = rand()%100;
+		mas [i] = rand()%100;
+}
 
+void printArr (double *mas, int size)
+{
 	for (int i = 0; i < size; i++)
-                mas2 [i] = rand()%100;
+		printf("mas [%d] = %.0lf - ", i, mas [i]);
+	printf ("\n");
 }
 
 void quickSort (double *mas, int size)
 {
-	int center = size / 2;
 	int i = 0;
+	int j = size;
 	double temp;
-	int j = size-1;	
-	end = mas[j];	
+	double center = mas [j/2];
 
-	printf ("%d\n", center);
-	do 
-	{
-		while (mas[i] < mas[center]) i++; 
-		while (mas[j] > mas[center]) j--;
+	while (i <=j)	{
+		while (mas[i] < center) i++;
+		while (mas[j] > center) j--;
 
 		if (i <= j)
 		{
@@ -53,37 +62,33 @@ void quickSort (double *mas, int size)
 			mas[j] = temp;
 			i++; j--;
 		}
-	} while (i <= j);
+	}
 
 	if (j > 0) quickSort(mas, j);
 	if (size > i) quickSort(mas+i, size - i);
-
 }
 
 void massNew (double *mas1, double *mas2, int size)
 {
 	int sizeNew = size*2;
-	double masNew[size];
+	double masNew[sizeNew];
 	int i = 0;
-//	for (i = 0; i < size; i++)
-	//int i = 0;
-	while (i < sizeNew)
-		for (int j = 0; j < size; j++)
+	int j1 = 0; int j2 = 0;
+	for (i = 0; i < sizeNew; i++)
+	{
+		if (mas1[j1] < mas2[j2])
 		{
-			if (mas1 [j] < mas2 [j]) 
-			{
-				masNew [i] = mas1 [j];
-				masNew [i+1] = mas1 [j];
-			}
-			else masNew [i] = mas2 [j];
-			{       
-                                masNew [i] = mas1 [j];
-                                masNew [i] = mas1 [j];
-                        }
-
-
-			i++;
+			masNew[i] = mas1[j1];
+			j1++;
 		}
-	for (i = 0; i < size; i++) printf("masNew [%d] = %.0lf\n", i, masNew [i]);
+		else 
+		{
+			masNew[i] = mas2[j2];
+			j2++;
+		}
+		if (j1 > size) masNew[sizeNew-1] = mas2[j2];
+		if (j2 > size) masNew[sizeNew-1] = mas1[j1];
+	}
 
+	printArr(masNew, sizeNew);
 }
